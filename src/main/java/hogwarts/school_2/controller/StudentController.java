@@ -1,6 +1,7 @@
 package hogwarts.school_2.controller;
 
 
+import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,9 +54,18 @@ public class StudentController {
         return service.getAllStudents();
     }
 
-    @GetMapping("get-by-{age}")
+    @GetMapping("get-by/{minAge}/{maxAge}")
     @Operation(summary = "Получение студентов по возрасту" )
-    public Collection<Student> getStudentsByAge(@PathVariable ("age") Integer age) {
-        return service.getStudentsByAge(age);
+    public Collection<Student> getStudentsByAge(
+            @PathVariable ("minAge") Integer minAge,
+            @PathVariable ("maxAge") Integer maxAge
+    ) {
+        return service.getStudentsByAgeBetween(minAge, maxAge);
+    }
+
+    @GetMapping("faculty/{studentId}")
+    @Operation(summary = "Получение факультета студента по id" )
+    public Faculty getFaculty(@PathVariable ("studentId") Long studentId) {
+        return service.getFaculty(studentId);
     }
 }

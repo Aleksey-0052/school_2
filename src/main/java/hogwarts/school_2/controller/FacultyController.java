@@ -2,6 +2,7 @@ package hogwarts.school_2.controller;
 
 
 import hogwarts.school_2.model.Faculty;
+import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.FacultyService;
 import hogwarts.school_2.service.FacultyServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,11 +62,20 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
-    @GetMapping("get-by-color")
-    @Operation(summary = "Получение факультетов по цвету" )
-    public ResponseEntity<Collection<Faculty>> getStudentsByAge(@RequestParam String color) {
-        Collection<Faculty> faculties = service.getFacultiesByColor(color);
+    @GetMapping("get-by-name-or-color")
+    @Operation(summary = "Получение факультетов по имени или цвету" )
+    public ResponseEntity<Collection<Faculty>> getFacultiesByColor(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String color) {
+        Collection<Faculty> faculties = service.getFacultiesByNameOrColor(name, color);
         return ResponseEntity.ok(faculties);
+    }
+
+    @GetMapping("students/{facultyId}")
+    @Operation(summary = "Получение студентов факультета" )
+    public ResponseEntity<Collection<Student>> getStudents(@PathVariable("facultyId") Long facultyId) {
+        Collection<Student> students = service.getStudents(facultyId);
+        return ResponseEntity.ok(students);
     }
 
 }

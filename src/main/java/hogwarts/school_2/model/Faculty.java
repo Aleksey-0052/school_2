@@ -1,13 +1,15 @@
 package hogwarts.school_2.model;
 
+import java.util.List;
 import java.util.Objects;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
-@Entity
-public class Faculty {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+@Entity(name = "faculties")
+@JsonIgnoreProperties(value = {"students"})        // данная аннотация необходима для того, чтобы список факультетов
+public class Faculty {                             // выводился без относящихся к ним студентов
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,6 +17,11 @@ public class Faculty {
 
     private String name;
     private String color;
+
+
+    @OneToMany(mappedBy = "faculty")
+    @JsonManagedReference
+    private List<Student> students;
 
     public Faculty() {}
 
@@ -24,6 +31,13 @@ public class Faculty {
         this.color = color;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
 
     public Long getId() {
         return id;

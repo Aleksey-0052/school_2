@@ -1,11 +1,13 @@
 package hogwarts.school_2.service;
 
 import hogwarts.school_2.exception.EntityNotFoundException;
+import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -40,8 +42,21 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll();
     }
 
-    public Collection<Student> getStudentsByAge(Integer age) {
-        return studentRepository.findByAge(age);
-
+    @Override
+    public Collection<Student> getStudentsByAgeBetween(Integer minAge, Integer maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
     }
+
+    @Override
+    public Faculty getFaculty(Long studentId) {
+        return find(studentId).getFaculty();
+        // находим по идентификатору студента и вызываем у объекта "student" геттер для получения поля faculty
+    }
+
+
+//    public Collection<Student> getStudentsByAge(Integer age) {
+//        return studentRepository.findByAge(age);
+//
+//    }
+
 }
