@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;

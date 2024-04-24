@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class FacultyServiceImpl implements FacultyService {
 
-    FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
     public FacultyServiceImpl(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
