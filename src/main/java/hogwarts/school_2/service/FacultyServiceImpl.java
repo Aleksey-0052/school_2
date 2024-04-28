@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class FacultyServiceImpl implements FacultyService {
 
-    FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
     public FacultyServiceImpl(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
@@ -31,7 +31,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty delete(Long id) {
-        Faculty  faculty = find(id);
+        Faculty faculty = find(id);
         facultyRepository.deleteById(id);
         return faculty;
     }

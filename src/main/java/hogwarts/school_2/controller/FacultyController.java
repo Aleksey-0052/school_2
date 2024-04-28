@@ -49,9 +49,6 @@ public class FacultyController {
     @Operation(summary = "Получение факультета по id" )
     public ResponseEntity<Faculty> get(@PathVariable Long id) {
         Faculty f = service.find(id);
-//        if (f == null) {
-//            return ResponseEntity.notFound().build();
-//        }
         return ResponseEntity.ok(f);
     }
 
