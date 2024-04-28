@@ -23,7 +23,7 @@ public class StudentController {
     }
 
     @PostMapping
-    @Operation(summary = "Создание студента" )
+    @Operation(summary = "Создание студента")
     public Student create(@RequestBody Student student) {
         return service.create(student);
         // необходимо использовать аннотацию @RequestBody org.springframework, но не одноименную аннотацию i.o. swagger
