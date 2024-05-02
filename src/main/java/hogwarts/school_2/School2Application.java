@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@OpenAPIDefinition
+@OpenAPIDefinition                                          // данную аннотацию добавляем для подключения к базе данных
 public class School2Application {
 
 	public static void main(String[] args) {
