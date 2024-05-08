@@ -1,6 +1,7 @@
 package hogwarts.school_2.controller;
 
 import hogwarts.school_2.model.Faculty;
+import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.FacultyService;
 import hogwarts.school_2.service.StudentService;
 import org.assertj.core.api.Assertions;
@@ -86,6 +87,7 @@ class FacultyControllerTest {
         );
 
         assertThat(getFacultyRs.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        
     }
 
     @Test
@@ -166,28 +168,29 @@ class FacultyControllerTest {
     @Test
     public void shouldReturnStudentsOfFaculty() throws Exception {
 
-//        MOCK_FACULTY_2.setStudents(MOCK_STUDENTS);
-//        // инициализируем у объекта факультет поле - список студентов
-//        Faculty createdFaculty = facultyService.create(MOCK_FACULTY_2);
-//        // сохраняем объект факультет в базу данных
-//
-//        List<Student> students = restTemplate.exchange(
-//                "http://localhost:" + port + "/faculty/students/" + createdFaculty.getId(),
-//                HttpMethod.GET,
-//                null,
-//                new ParameterizedTypeReference<List<Student>>() {}
-//        ).getBody();
-//
-//        assertNotNull(students);
-//        assertThat(students).isEqualTo(MOCK_STUDENTS);
-    }
+        Faculty createdFaculty = facultyService.create(MOCK_FACULTY_1);
+        // сохраняем объект факультет в базу данных
+        MOCK_STUDENT_1.setFaculty(createdFaculty);
+        MOCK_STUDENT_2.setFaculty(createdFaculty);
+        MOCK_STUDENT_3.setFaculty(createdFaculty);
 
+        Student createdStudent1 = studentService.create(MOCK_STUDENT_1);
+        Student createdStudent2 = studentService.create(MOCK_STUDENT_2);
+        Student createdStudent3 = studentService.create(MOCK_STUDENT_3);
+
+        List<Student> students = restTemplate.exchange(
+                "http://localhost:" + port + "/faculty/students/" + createdFaculty.getId(),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Student>>() {}
+        ).getBody();
+
+        assertNotNull(students);
+        assertThat(students).isEqualTo(MOCK_STUDENTS);
+    }
 
     public Faculty createMockFaculty() {
         return facultyService.create(MOCK_FACULTY_1);
     }
 
-    public Faculty createMockFaculty(Long id, String name, String color) {
-        return facultyService.create(new Faculty(id, name, color));
-    }
 }

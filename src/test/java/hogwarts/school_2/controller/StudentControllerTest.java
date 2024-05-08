@@ -43,15 +43,15 @@ class StudentControllerTest {
         // выполняем post-запрос путем вызова метода postForEntity() и сразу же получаем ответ в переменной newStudentRs
         ResponseEntity<Student> newStudentRs = restTemplate.postForEntity(
                 "http://localhost:" + port + "/student",
-                MOCK_STUDENT,
+                MOCK_STUDENT_1,
                 Student.class
         );
 
         assertThat(newStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);
         Student newStudent = newStudentRs.getBody();
         // из объекта ResponseEntity получаем студента
-        assertThat(newStudent.getName()).isEqualTo(MOCK_STUDENT.getName());
-        assertThat(newStudent.getAge()).isEqualTo(MOCK_STUDENT.getAge());
+        assertThat(newStudent.getName()).isEqualTo(MOCK_STUDENT_1.getName());
+        assertThat(newStudent.getAge()).isEqualTo(MOCK_STUDENT_1.getAge());
         // id не проверяем, так как id будет установлен автоматически и не будет тем, который был передан в запросе
     }
 
@@ -121,11 +121,11 @@ class StudentControllerTest {
     @Test
     public void shouldReturnAllStudents() throws Exception {
 
-        createMockStudent(1L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE);
-        createMockStudent(2L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 1);
-        createMockStudent(3L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 3);
-        createMockStudent(4L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 5);
-        createMockStudent(5L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 6);
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
+        createMockStudent(5L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
 
         List<Student> students = restTemplate.exchange(
                 "http://localhost:" + port + "/student/all",
@@ -145,13 +145,14 @@ class StudentControllerTest {
     @Test
     public void shouldReturnStudentsByAge() throws Exception {
 
-        createMockStudent(1L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE);
-        createMockStudent(2L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 1);
-        createMockStudent(3L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 3);
-        createMockStudent(4L, MOCK_STUDENT_NAME, MOCK_STUDENT_AGE + 5);
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
+        createMockStudent(5L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
 
         List<Student> students = restTemplate.exchange(
-                "http://localhost:" + port + "/student/get-by/" + MOCK_STUDENT_AGE + "/" + (MOCK_STUDENT_AGE + 2),
+                "http://localhost:" + port + "/student/get-by/" + MOCK_STUDENT_AGE_2 + "/" + (MOCK_STUDENT_AGE_3),
                 HttpMethod.GET,
                 null,
                 // заголовки
@@ -166,8 +167,8 @@ class StudentControllerTest {
     @Test
     public void shouldReturnFacultyOfStudents() throws Exception {
         Faculty createdFaculty = facultyService.create(MOCK_FACULTY_1);
-        MOCK_STUDENT.setFaculty(createdFaculty);
-        Student createdStudent = studentService.create(MOCK_STUDENT);
+        MOCK_STUDENT_1.setFaculty(createdFaculty);
+        Student createdStudent = studentService.create(MOCK_STUDENT_1);
 
         ResponseEntity<Faculty> getStudentFacultyRs = restTemplate.getForEntity(
                 "http://localhost:" + port + "/student/faculty/" + createdStudent.getId(),
@@ -177,21 +178,17 @@ class StudentControllerTest {
         assertThat(getStudentFacultyRs.getStatusCode()).isEqualTo(HttpStatus.OK);
         Faculty faculty = getStudentFacultyRs.getBody();
         assertNotNull(faculty);
-        assertThat(faculty).isEqualTo(MOCK_STUDENT.getFaculty());
+        assertThat(faculty).isEqualTo(MOCK_STUDENT_1.getFaculty());
     }
 
     // метод для создания студента в базе данных
     public Student createMockStudent() {
-        return studentService.create(MOCK_STUDENT);
+        return studentService.create(MOCK_STUDENT_1);
     }
 
     // метод для создания студента в базе данных с определенными именем и возрастом
     public Student createMockStudent(Long id, String name, Integer age) {
         return studentService.create(new Student(id, name, age));
     }
-
-
-
-
 
 }

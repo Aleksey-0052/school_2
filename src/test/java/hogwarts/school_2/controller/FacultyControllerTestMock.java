@@ -136,26 +136,30 @@ public class FacultyControllerTestMock {
 
 //        when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(anyString(), anyString()))
 //                .thenReturn(MOCK_FACULTIES_BY_NAME);
-//
-//        mockmvc.perform(MockMvcRequestBuilders
-//                        //.get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2 + "&color=" + MOCK_FACULTY_COLOR_2)
-//                        .get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_NAME)));
-//
-//
-//        when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(anyString(), anyString()))
-//                .thenReturn(MOCK_FACULTIES_BY_COLOR);
-//
-//        mockmvc.perform(MockMvcRequestBuilders
-//                        //.get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2 + "&color=" + MOCK_FACULTY_COLOR_2)
-//                        .get("/faculty/get-by-name-or-color?color=Green")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_COLOR)));
+//        // anyString() применяется, если используются оба параметра
+
+        when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(any(), any()))
+                .thenReturn(MOCK_FACULTIES_BY_NAME);
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        //.get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2 + "&color=" + MOCK_FACULTY_COLOR_2)
+                        .get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_NAME)));
+
+
+        when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(any(), any()))
+                .thenReturn(MOCK_FACULTIES_BY_COLOR);
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        //.get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2 + "&color=" + MOCK_FACULTY_COLOR_2)
+                        .get("/faculty/get-by-name-or-color?color=green")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_COLOR)));
     }
 
     @Test

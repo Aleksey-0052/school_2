@@ -46,13 +46,13 @@ public class StudentControllerTestMock {
     @Test
     public void shouldCreateStudent() throws Exception {
 
-        when(studentRepository.save(any(Student.class))).thenReturn(MOCK_STUDENT);
+        when(studentRepository.save(any(Student.class))).thenReturn(MOCK_STUDENT_1);
         // должен вернуться MOCK_STUDENT
 
         // Создадим переменную studentObject и заполним ее данными. Эту переменную будем использовать в качестве входных данных.
         JSONObject studentObject = new JSONObject();
-        studentObject.put("name", MOCK_STUDENT_NAME);
-        studentObject.put("age", MOCK_STUDENT_AGE);
+        studentObject.put("name", MOCK_STUDENT_NAME_1);
+        studentObject.put("age", MOCK_STUDENT_AGE_1);
 
         // с помощью метода perform() осуществляем вызов эндпоинта
         mockmvc.perform(MockMvcRequestBuilders
@@ -62,9 +62,9 @@ public class StudentControllerTestMock {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 // проверяем, что статус ответа 200
-                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME))
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME_1))
                 // проверяем, что имя в json соответствует имени MOCK_FACULTY_NAME, то есть тому, которое передали
-                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE));
+                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE_1));
         // проверяем, что возраст в json соответствует возрасту MOCK_STUDENT_AGE, то есть тому, который передали
         // при помощи $ извлекаем из json значение соответствующего поля и сравниваем с входящими данными
     }
@@ -72,24 +72,24 @@ public class StudentControllerTestMock {
     @Test
     public void shouldReturnStudentById() throws Exception {
 
-        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
+        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT_1));
 
         mockmvc.perform(MockMvcRequestBuilders
-                        .get("/student/" + MOCK_STUDENT_ID)
+                        .get("/student/" + MOCK_STUDENT_ID_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME))
-                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE));
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME_1))
+                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE_1));
     }
 
     @Test
     public void shouldDeleteStudent() throws Exception {
 
-        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
+        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT_1));
 
         mockmvc.perform(MockMvcRequestBuilders
-                        .delete("/student/" + MOCK_STUDENT_ID)
+                        .delete("/student/" + MOCK_STUDENT_ID_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -98,12 +98,12 @@ public class StudentControllerTestMock {
     @Test
     public void shouldEditStudent() throws Exception {
 
-        when(studentRepository.save(any(Student.class))).thenReturn(MOCK_STUDENT);
+        when(studentRepository.save(any(Student.class))).thenReturn(MOCK_STUDENT_1);
 
         JSONObject studentObject = new JSONObject();
-        studentObject.put("id", MOCK_STUDENT_ID);
-        studentObject.put("name", MOCK_STUDENT_NAME);
-        studentObject.put("age", MOCK_STUDENT_AGE);
+        studentObject.put("id", MOCK_STUDENT_ID_1);
+        studentObject.put("name", MOCK_STUDENT_NAME_1);
+        studentObject.put("age", MOCK_STUDENT_AGE_1);
 
         mockmvc.perform(MockMvcRequestBuilders
                         .put("/student")
@@ -111,8 +111,8 @@ public class StudentControllerTestMock {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME))
-                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE));
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME_1))
+                .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE_1));
     }
 
     @Test
@@ -133,28 +133,28 @@ public class StudentControllerTestMock {
     @Test
     public void shouldReturnStudentsByAge() throws Exception {
         when(studentRepository.findByAgeBetween(anyInt(), anyInt()))
-                .thenReturn(MOCK_STUDENTS);
+                .thenReturn(MOCK_STUDENTS_BY_AGE);
 
         mockmvc.perform(MockMvcRequestBuilders
-                        .get("/student/get-by/" + (MOCK_STUDENT_AGE + 10) + "/" + (MOCK_STUDENT_AGE + 20))
+                        .get("/student/get-by/" + (MOCK_STUDENT_AGE_2) + "/" + (MOCK_STUDENT_AGE_3))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS)));
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS_BY_AGE)));
     }
     // данный тест выполняется при любых значениях минимального и максимального возраста
 
     @Test
     public void shouldReturnFacultyOfStudents() throws Exception {
 
-        MOCK_STUDENT.setFaculty(MOCK_FACULTY_3);
+        MOCK_STUDENT_3.setFaculty(MOCK_FACULTY_3);
         // у объекта типа Student вызываем сеттер и инициализируем его поле - факультет
 
-        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
+        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT_3));
         // должен быть возвращен объект типа Student с привязанным к нему факультетом
 
         mockmvc.perform(MockMvcRequestBuilders
-                        .get("/student/faculty/" + MOCK_STUDENT_ID)
+                        .get("/student/faculty/" + MOCK_STUDENT_ID_3)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
