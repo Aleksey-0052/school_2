@@ -74,7 +74,7 @@ class FacultyControllerTest {
     @Test
     public void shouldDeleteFaculty() throws Exception {
 
-        Faculty createdFaculty = createMockFaculty();
+        Faculty createdFaculty = createMockFaculty(6L, MOCK_FACULTY_NAME_1, MOCK_FACULTY_COLOR_1);
 
         restTemplate.delete(
                 "http://localhost:" + port + "/faculty/" + createdFaculty.getId(),
@@ -191,6 +191,11 @@ class FacultyControllerTest {
 
     public Faculty createMockFaculty() {
         return facultyService.create(MOCK_FACULTY_1);
+    }
+
+    // метод для создания студента в базе данных с определенными именем и возрастом
+    public Faculty createMockFaculty(Long id, String name, String color) {
+        return facultyService.create(new Faculty(id, name, color));
     }
 
 }
