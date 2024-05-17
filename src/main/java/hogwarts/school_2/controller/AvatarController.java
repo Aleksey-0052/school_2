@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("avatar")
@@ -65,5 +66,15 @@ public class AvatarController {
             response.setContentLength((int) avatar.getFileSize());
             bis.transferTo(bos);
         }
+    }
+
+    // добавляем пагинацию
+    @GetMapping("/page-size")
+    public ResponseEntity<List<Avatar>> getAllAvatars(
+            @RequestParam("page") Integer pageNumber,
+            @RequestParam("size") Integer pageSize
+    ) {
+        List<Avatar> avatars = service.getAllAvatars(pageNumber, pageSize);
+        return ResponseEntity.ok(avatars);
     }
 }

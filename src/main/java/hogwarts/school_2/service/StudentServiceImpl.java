@@ -3,6 +3,7 @@ package hogwarts.school_2.service;
 import hogwarts.school_2.exception.EntityNotFoundException;
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
+import hogwarts.school_2.repository.AllStudentsRepository;
 import hogwarts.school_2.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,11 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    private final AllStudentsRepository allStudentsRepository;
+
+    public StudentServiceImpl(StudentRepository studentRepository, AllStudentsRepository allStudentsRepository) {
         this.studentRepository = studentRepository;
+        this.allStudentsRepository = allStudentsRepository;
     }
 
     @Override
@@ -63,5 +67,24 @@ public class StudentServiceImpl implements StudentService {
 //        return studentRepository.findByAge(age);
 //
 //    }
+
+
+    public Integer getTotalCountOfStudents() {
+        return studentRepository.getTotalCountOfStudents();
+    }
+
+    public Double getAverageAgeOfStudents() {
+        return studentRepository.getAverageAgeOfStudents();
+    }
+
+    public List<Student> getLimitOfStudents() {
+        return studentRepository.getLimitOfStudents();
+    }
+
+    // получение количества всех студентов через создание interface projection
+    public Integer getAmountOfStudents() {
+        return allStudentsRepository.getAmountOfStudents();
+    }
+
 
 }

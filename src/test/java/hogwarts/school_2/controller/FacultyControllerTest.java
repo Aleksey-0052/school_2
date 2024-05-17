@@ -173,10 +173,16 @@ class FacultyControllerTest {
         MOCK_STUDENT_1.setFaculty(createdFaculty);
         MOCK_STUDENT_2.setFaculty(createdFaculty);
         MOCK_STUDENT_3.setFaculty(createdFaculty);
+        MOCK_STUDENT_4.setFaculty(createdFaculty);
+        MOCK_STUDENT_5.setFaculty(createdFaculty);
+        MOCK_STUDENT_6.setFaculty(createdFaculty);
 
         Student createdStudent1 = studentService.create(MOCK_STUDENT_1);
         Student createdStudent2 = studentService.create(MOCK_STUDENT_2);
         Student createdStudent3 = studentService.create(MOCK_STUDENT_3);
+        Student createdStudent4 = studentService.create(MOCK_STUDENT_4);
+        Student createdStudent5 = studentService.create(MOCK_STUDENT_5);
+        Student createdStudent6 = studentService.create(MOCK_STUDENT_6);
 
         List<Student> students = restTemplate.exchange(
                 "http://localhost:" + port + "/faculty/students/" + createdFaculty.getId(),

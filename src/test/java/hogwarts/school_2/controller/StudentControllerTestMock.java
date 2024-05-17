@@ -2,6 +2,7 @@ package hogwarts.school_2.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hogwarts.school_2.model.Student;
+import hogwarts.school_2.repository.AllStudentsRepository;
 import hogwarts.school_2.repository.StudentRepository;
 import hogwarts.school_2.service.StudentServiceImpl;
 import org.json.JSONObject;
@@ -11,14 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.Optional;
 
 import static hogwarts.school_2.controller.TestConstants.*;
 import static hogwarts.school_2.controller.TestConstants.MOCK_STUDENTS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,6 +38,9 @@ public class StudentControllerTestMock {
 
     @MockBean
     private StudentRepository studentRepository;
+
+    @MockBean
+    private AllStudentsRepository allStudentsRepository;
 
     @SpyBean
     private StudentServiceImpl studentService;
@@ -162,4 +172,65 @@ public class StudentControllerTestMock {
         // проверяем, что содержимое нашего ответа соответствует json, полученному в результате вызова у объекта типа
         // ObjectMapper метода writeValueAsString() и передачи в параметры метода установленного факультета
     }
+
+
+    // получение количества всех студентов
+    @Test
+    public void  shouldReturnTotalCountOfStudents() throws Exception {
+
+        when(studentRepository.getTotalCountOfStudents()).thenReturn(MOCK_STUDENTS.size());
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        .get("/student/count")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS.size())));
+    }
+
+    // получение среднего возраста студентов
+    @Test
+    public void shouldReturnAverageAgeOfStudents() throws Exception {
+
+        when(studentRepository.getAverageAgeOfStudents())
+                .thenReturn((double) ((MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3) / 3));
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        .get("/student/average-age")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString((double) ((MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3) / 3))));
+    }
+
+
+    // получение части студентов
+    @Test
+    public void shouldReturnLimitOfStudents() throws Exception {
+
+        when(studentRepository.getLimitOfStudents()).thenReturn(MOCK_STUDENTS_LIMIT);
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        .get("/student/limit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS_LIMIT)));
+    }
+
+
+    // получение количества всех студентов через создание interface projection
+    @Test
+    public void shouldReturnAmountOfStudents() throws Exception {
+
+        when(allStudentsRepository.getAmountOfStudents()).thenReturn(MOCK_STUDENTS.size());
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        .get("/student/amount")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS.size())));
+    }
+
 }

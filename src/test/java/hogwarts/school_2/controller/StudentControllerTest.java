@@ -14,6 +14,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -124,8 +125,9 @@ class StudentControllerTest {
         createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
         createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
         createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
-        createMockStudent(4L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
-        createMockStudent(5L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
 
         List<Student> students = restTemplate.exchange(
                 "http://localhost:" + port + "/student/all",
@@ -139,7 +141,7 @@ class StudentControllerTest {
 
         assertFalse(students.isEmpty());
         // проверяем, что коллекция не пустая
-        assertTrue(students.size() == 5);
+        assertTrue(students.size() == 6);
     }
 
     @Test
@@ -148,8 +150,11 @@ class StudentControllerTest {
         createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
         createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
         createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
-        createMockStudent(4L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
-        createMockStudent(5L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+        createMockStudent(7L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
+        createMockStudent(8L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
 
         List<Student> students = restTemplate.exchange(
                 "http://localhost:" + port + "/student/get-by/" + MOCK_STUDENT_AGE_2 + "/" + (MOCK_STUDENT_AGE_3),
@@ -161,12 +166,18 @@ class StudentControllerTest {
                 // данный объект используется для того, чтобы в ответе пришел список студентов
         ).getBody();
 
-        assertTrue(students.size() == 2);
+        assertTrue(students.size() == 4);
+        assertThat(students.get(0)).isEqualTo(MOCK_STUDENT_2);
+        assertThat(students.get(1)).isEqualTo(MOCK_STUDENT_3);
+        assertThat(students.get(2)).isEqualTo(MOCK_STUDENT_4);
+        assertThat(students.get(3)).isEqualTo(MOCK_STUDENT_5);
+
     }
 
     @Test
     public void shouldReturnFacultyOfStudents() throws Exception {
         Faculty createdFaculty = facultyService.create(MOCK_FACULTY_1);
+
         MOCK_STUDENT_1.setFaculty(createdFaculty);
         Student createdStudent = studentService.create(MOCK_STUDENT_1);
 
@@ -180,6 +191,114 @@ class StudentControllerTest {
         assertNotNull(faculty);
         assertThat(faculty).isEqualTo(MOCK_STUDENT_1.getFaculty());
     }
+
+
+    // получение количества всех студентов
+    @Test
+    public void  shouldReturnTotalCountOfStudents() throws Exception {
+
+        createMockStudent(9L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
+        createMockStudent(10L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
+        createMockStudent(11L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 5);
+        createMockStudent(12L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2 + 3);
+        createMockStudent(13L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2 + 4);
+        createMockStudent(14L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2 + 5);
+
+        ResponseEntity<Integer> getAmountOfStudentRs = restTemplate.getForEntity(
+                "http://localhost:" + port + "/student/count",
+                Integer.class
+        );
+
+        assertThat(getAmountOfStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);
+        int count = getAmountOfStudentRs.getBody();
+        // из объекта ResponseEntity получаем количество
+        assertThat(count).isEqualTo(MOCK_STUDENTS.size());
+
+    }
+
+    // получение среднего возраста студентов
+    @Test
+    public void shouldReturnAverageAgeOfStudents() {
+
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+        createMockStudent(7L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
+        createMockStudent(8L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
+
+        ResponseEntity<Double> getAverageAgeOfStudentRs = restTemplate.getForEntity(
+                "http://localhost:" + port + "/student/average-age",
+                Double.class
+        );
+
+        assertThat(getAverageAgeOfStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);
+        double averageAge = getAverageAgeOfStudentRs.getBody();
+        // из объекта ResponseEntity получаем средний возраст
+        assertThat(averageAge).isEqualTo(((double) MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3 +
+                MOCK_STUDENT_AGE_4 + MOCK_STUDENT_AGE_5 + MOCK_STUDENT_AGE_6 + (MOCK_STUDENT_AGE_1 + 3) +
+                (MOCK_STUDENT_AGE_1 + 4)) / 8);
+    }
+
+
+    // получение количества всех студентов через создание interface projection
+    @Test
+    public void shouldReturnAmountOfStudents() {
+        createMockStudent(21L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(22L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(23L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(24L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(25L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(26L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+
+        ResponseEntity<Integer> getAmountOfStudentRs = restTemplate.getForEntity(
+                "http://localhost:" + port + "/student/amount",
+                Integer.class
+        );
+
+        assertThat(getAmountOfStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);
+        int count = getAmountOfStudentRs.getBody();
+        // из объекта ResponseEntity получаем количество
+        assertThat(count).isEqualTo(6);
+    }
+
+
+    // получение части студентов
+    @Test
+    public void shouldReturnLimitOfStudents() {
+
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+
+        List<Student> students = restTemplate.exchange(
+                "http://localhost:" + port + "/student/limit",
+                HttpMethod.GET,
+                null,
+                // заголовки
+                new ParameterizedTypeReference<List<Student>>() {}
+                // данный объект используется для того, чтобы в ответе пришел список студентов
+        ).getBody();
+
+        assertFalse(students.isEmpty());
+        // проверяем, что коллекция не пустая
+        assertTrue(students.size() == 5);
+
+        assertThat(students.get(0)).isEqualTo(MOCK_STUDENT_2);
+        assertThat(students.get(1)).isEqualTo(MOCK_STUDENT_3);
+        assertThat(students.get(2)).isEqualTo(MOCK_STUDENT_4);
+        assertThat(students.get(3)).isEqualTo(MOCK_STUDENT_5);
+        assertThat(students.get(4)).isEqualTo(MOCK_STUDENT_6);
+
+    }
+
+
+
 
     // метод для создания студента в базе данных
     public Student createMockStudent() {
