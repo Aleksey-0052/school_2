@@ -2,9 +2,12 @@ package hogwarts.school_2.controller;
 
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
+import hogwarts.school_2.repository.AllStudentsRepository;
+import hogwarts.school_2.repository.StudentRepository;
 import hogwarts.school_2.service.FacultyService;
 import hogwarts.school_2.service.StudentService;
-import org.assertj.core.api.Assertions;
+import hogwarts.school_2.service.StudentServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +17,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -35,13 +37,26 @@ class StudentControllerTest {
     private FacultyService facultyService;
 
     @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private AllStudentsRepository allStudentsRepository;
+
+    @Autowired
     private TestRestTemplate restTemplate;
+
+
+    @BeforeEach
+    public void setUp() {
+        studentService = new StudentServiceImpl(studentRepository, allStudentsRepository);
+    }
 
 
     @Test
     public void shouldCreateStudent() throws Exception {
 
         // выполняем post-запрос путем вызова метода postForEntity() и сразу же получаем ответ в переменной newStudentRs
+
         ResponseEntity<Student> newStudentRs = restTemplate.postForEntity(
                 "http://localhost:" + port + "/student",
                 MOCK_STUDENT_1,
@@ -61,6 +76,7 @@ class StudentControllerTest {
         // создаем студента путем вызова метода сервиса, сервис вызывает репозиторий, а репозиторий добавляет студента
         // в базу данных; студент не моковый; при добавлении студента в базу данных ему автоматически присваивается id,
         // который не соответствует тому id, с которым студент был отправлен на вход в метод
+
         Student createdStudent = createMockStudent();
 
         ResponseEntity<Student> getStudentRs = restTemplate.getForEntity(
@@ -98,6 +114,7 @@ class StudentControllerTest {
 
         // создали в базе данных студента
         Student createdStudent = createMockStudent();
+
         // изменили у студента имя
         createdStudent.setName(MOCK_STUDENT_NEW_NAME);
 
@@ -129,7 +146,7 @@ class StudentControllerTest {
         createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
         createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
 
-        List<Student> students = restTemplate.exchange(
+        List <Student> students = restTemplate.exchange(
                 "http://localhost:" + port + "/student/all",
                 HttpMethod.GET,
                 null,
@@ -138,10 +155,11 @@ class StudentControllerTest {
                 // данный объект используется для того, чтобы в ответе пришел список студентов
         ).getBody();
 
-
         assertFalse(students.isEmpty());
         // проверяем, что коллекция не пустая
-        assertTrue(students.size() == 6);
+        assertTrue(students.size() == MOCK_STUDENTS.size());
+        assertThat(students).isEqualTo(MOCK_STUDENTS);
+
     }
 
     @Test
@@ -153,11 +171,9 @@ class StudentControllerTest {
         createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
         createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
         createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
-        createMockStudent(7L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
-        createMockStudent(8L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
 
-        List<Student> students = restTemplate.exchange(
-                "http://localhost:" + port + "/student/get-by/" + MOCK_STUDENT_AGE_2 + "/" + (MOCK_STUDENT_AGE_3),
+        List <Student> students = restTemplate.exchange(
+                "http://localhost:" + port + "/student/get-by/" + 21 + "/" + 22,
                 HttpMethod.GET,
                 null,
                 // заголовки
@@ -166,17 +182,13 @@ class StudentControllerTest {
                 // данный объект используется для того, чтобы в ответе пришел список студентов
         ).getBody();
 
-        assertTrue(students.size() == 4);
-        assertThat(students.get(0)).isEqualTo(MOCK_STUDENT_2);
-        assertThat(students.get(1)).isEqualTo(MOCK_STUDENT_3);
-        assertThat(students.get(2)).isEqualTo(MOCK_STUDENT_4);
-        assertThat(students.get(3)).isEqualTo(MOCK_STUDENT_5);
-
+        assertTrue(students.size() == MOCK_STUDENTS_BY_AGE.size());
+        assertThat(students).isEqualTo(MOCK_STUDENTS_BY_AGE);
     }
 
     @Test
     public void shouldReturnFacultyOfStudents() throws Exception {
-        Faculty createdFaculty = facultyService.create(MOCK_FACULTY_1);
+        Faculty createdFaculty = facultyService.create(MOCK_FACULTY_4);
 
         MOCK_STUDENT_1.setFaculty(createdFaculty);
         Student createdStudent = studentService.create(MOCK_STUDENT_1);
@@ -192,17 +204,16 @@ class StudentControllerTest {
         assertThat(faculty).isEqualTo(MOCK_STUDENT_1.getFaculty());
     }
 
-
     // получение количества всех студентов
     @Test
     public void  shouldReturnTotalCountOfStudents() throws Exception {
 
-        createMockStudent(9L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
-        createMockStudent(10L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
-        createMockStudent(11L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 5);
-        createMockStudent(12L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2 + 3);
-        createMockStudent(13L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2 + 4);
-        createMockStudent(14L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2 + 5);
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
 
         ResponseEntity<Integer> getAmountOfStudentRs = restTemplate.getForEntity(
                 "http://localhost:" + port + "/student/count",
@@ -213,7 +224,6 @@ class StudentControllerTest {
         int count = getAmountOfStudentRs.getBody();
         // из объекта ResponseEntity получаем количество
         assertThat(count).isEqualTo(MOCK_STUDENTS.size());
-
     }
 
     // получение среднего возраста студентов
@@ -226,8 +236,6 @@ class StudentControllerTest {
         createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
         createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
         createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
-        createMockStudent(7L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 3);
-        createMockStudent(8L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1 + 4);
 
         ResponseEntity<Double> getAverageAgeOfStudentRs = restTemplate.getForEntity(
                 "http://localhost:" + port + "/student/average-age",
@@ -238,20 +246,18 @@ class StudentControllerTest {
         double averageAge = getAverageAgeOfStudentRs.getBody();
         // из объекта ResponseEntity получаем средний возраст
         assertThat(averageAge).isEqualTo(((double) MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3 +
-                MOCK_STUDENT_AGE_4 + MOCK_STUDENT_AGE_5 + MOCK_STUDENT_AGE_6 + (MOCK_STUDENT_AGE_1 + 3) +
-                (MOCK_STUDENT_AGE_1 + 4)) / 8);
+                MOCK_STUDENT_AGE_4 + MOCK_STUDENT_AGE_5 + MOCK_STUDENT_AGE_6) / 6);
     }
-
 
     // получение количества всех студентов через создание interface projection
     @Test
     public void shouldReturnAmountOfStudents() {
-        createMockStudent(21L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
-        createMockStudent(22L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
-        createMockStudent(23L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
-        createMockStudent(24L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
-        createMockStudent(25L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
-        createMockStudent(26L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
 
         ResponseEntity<Integer> getAmountOfStudentRs = restTemplate.getForEntity(
                 "http://localhost:" + port + "/student/amount",
@@ -261,9 +267,8 @@ class StudentControllerTest {
         assertThat(getAmountOfStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);
         int count = getAmountOfStudentRs.getBody();
         // из объекта ResponseEntity получаем количество
-        assertThat(count).isEqualTo(6);
+        assertThat(count).isEqualTo(MOCK_STUDENTS.size());
     }
-
 
     // получение части студентов
     @Test

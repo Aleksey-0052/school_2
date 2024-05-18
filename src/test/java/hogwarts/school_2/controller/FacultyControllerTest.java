@@ -2,9 +2,11 @@ package hogwarts.school_2.controller;
 
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
+import hogwarts.school_2.repository.FacultyRepository;
 import hogwarts.school_2.service.FacultyService;
+import hogwarts.school_2.service.FacultyServiceImpl;
 import hogwarts.school_2.service.StudentService;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +16,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 import static hogwarts.school_2.controller.TestConstants.*;
@@ -35,7 +36,16 @@ class FacultyControllerTest {
     private StudentService studentService;
 
     @Autowired
+    private FacultyRepository facultyRepository;
+
+    @Autowired
     private TestRestTemplate restTemplate;
+
+
+    @BeforeEach
+    public void setUp() {
+        facultyService = new FacultyServiceImpl(facultyRepository);
+    }
 
 
     @Test
@@ -58,6 +68,7 @@ class FacultyControllerTest {
         // создаем объект типа Faculty путем вызова метода сервиса, сервис вызывает репозиторий, а репозиторий добавляет
         // объект-факультет в базу данных; факультет не моковый; при добавлении факультета в базу данных ему автоматически
         // присваивается id, который не соответствует тому id, с которым факультет был отправлен на вход в метод
+
         Faculty createdFaculty = createMockFaculty();
 
         ResponseEntity<Faculty> getFacultyRs = restTemplate.getForEntity(
@@ -74,7 +85,7 @@ class FacultyControllerTest {
     @Test
     public void shouldDeleteFaculty() throws Exception {
 
-        Faculty createdFaculty = createMockFaculty(6L, MOCK_FACULTY_NAME_1, MOCK_FACULTY_COLOR_1);
+        Faculty createdFaculty = createMockFaculty(2L, MOCK_FACULTY_NAME_2, MOCK_FACULTY_COLOR_2);
 
         restTemplate.delete(
                 "http://localhost:" + port + "/faculty/" + createdFaculty.getId(),
@@ -87,7 +98,6 @@ class FacultyControllerTest {
         );
 
         assertThat(getFacultyRs.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        
     }
 
     @Test
@@ -118,6 +128,7 @@ class FacultyControllerTest {
         facultyService.create(MOCK_FACULTY_1);
         facultyService.create(MOCK_FACULTY_2);
         facultyService.create(MOCK_FACULTY_3);
+        facultyService.create(MOCK_FACULTY_4);
 
         List<Faculty> faculties = restTemplate.exchange(
                 "http://localhost:" + port + "/faculty/all",
@@ -129,7 +140,8 @@ class FacultyControllerTest {
         ).getBody();
 
         assertFalse(faculties.isEmpty());
-        assertTrue(faculties.size() == 3);
+        assertTrue(faculties.size() == 4);
+        assertThat(faculties).isEqualTo(MOCK_FACULTIES);
     }
 
     @Test
@@ -138,6 +150,8 @@ class FacultyControllerTest {
         facultyService.create(MOCK_FACULTY_1);
         facultyService.create(MOCK_FACULTY_2);
         facultyService.create(MOCK_FACULTY_3);
+        facultyService.create(MOCK_FACULTY_4);
+
 
         // Получаем коллекцию факультетов по имени
         List<Faculty> faculties1 = restTemplate.exchange(
@@ -147,15 +161,16 @@ class FacultyControllerTest {
                 // заголовки
                 new ParameterizedTypeReference<List<Faculty>>() {
                 }
-                // данный объект используется для того, чтобы в ответе пришел список студентов
+                // данный объект используется для того, чтобы в ответе пришел список факультетов
         ).getBody();
 
         assertTrue(faculties1.size() == 1);
+        assertThat(faculties1).isEqualTo(MOCK_FACULTIES_BY_NAME);
 
 
         // Получаем коллекцию факультетов по цвету
         List<Faculty> faculties2 = restTemplate.exchange(
-                "http://localhost:" + port + "/faculty/get-by-name-or-color?color=" + MOCK_FACULTY_COLOR_2,
+                "http://localhost:" + port + "/faculty/get-by-name-or-color?color=Green",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<Faculty>>() {
@@ -163,13 +178,15 @@ class FacultyControllerTest {
         ).getBody();
 
         assertTrue(faculties2.size() == 2);
+        assertThat(faculties2).isEqualTo(MOCK_FACULTIES_BY_COLOR);
     }
 
     @Test
     public void shouldReturnStudentsOfFaculty() throws Exception {
 
-        Faculty createdFaculty = facultyService.create(MOCK_FACULTY_1);
+        Faculty createdFaculty = facultyService.create(MOCK_FACULTY_4);
         // сохраняем объект факультет в базу данных
+
         MOCK_STUDENT_1.setFaculty(createdFaculty);
         MOCK_STUDENT_2.setFaculty(createdFaculty);
         MOCK_STUDENT_3.setFaculty(createdFaculty);
@@ -194,6 +211,9 @@ class FacultyControllerTest {
         assertNotNull(students);
         assertThat(students).isEqualTo(MOCK_STUDENTS);
     }
+
+
+
 
     public Faculty createMockFaculty() {
         return facultyService.create(MOCK_FACULTY_1);
