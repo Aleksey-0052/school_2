@@ -1,11 +1,13 @@
 package hogwarts.school_2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
+@JsonIgnoreProperties(value = {"data"})                                 // чтобы не выводить массивы байт
 public class Avatar {
 
     @Id

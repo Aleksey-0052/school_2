@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("student")
@@ -68,4 +69,37 @@ public class StudentController {
     public Faculty getFaculty(@PathVariable ("studentId") Long studentId) {
         return service.getFaculty(studentId);
     }
+
+
+
+    // получение количества всех студентов
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getTotalCountOfStudents() {
+        int count = service.getTotalCountOfStudents();
+        return ResponseEntity.ok(count);
+    }
+
+    // получение среднего возраста студентов
+    @GetMapping("/average-age")
+    public Double getAverageAgeOfStudents() {
+        return service.getAverageAgeOfStudents();
+    }
+
+    // получение части студентов
+    @GetMapping("/limit")
+    public ResponseEntity<List<Student>> getLimitOfStudents() {
+        List<Student> students = service.getLimitOfStudents();
+        return ResponseEntity.ok(students);
+    }
+
+
+    // получение количества всех студентов через создание interface projection
+    @GetMapping("/amount")
+    public Integer getAmountOfStudents() {
+        return service.getAmountOfStudents();
+    }
+
+
+
+
 }
