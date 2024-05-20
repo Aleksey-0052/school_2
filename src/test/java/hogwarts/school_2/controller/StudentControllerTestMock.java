@@ -12,20 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
 import java.util.Optional;
 
 import static hogwarts.school_2.controller.TestConstants.*;
 import static hogwarts.school_2.controller.TestConstants.MOCK_STUDENTS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -187,6 +181,7 @@ public class StudentControllerTestMock {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS.size())));
     }
+
 
     // получение среднего возраста студентов
     @Test

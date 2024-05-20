@@ -94,6 +94,7 @@ public class AvatarServiceImpl implements AvatarService {
     public List<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
+        // можно вместо getContent() указать toList()
     }
 
 }

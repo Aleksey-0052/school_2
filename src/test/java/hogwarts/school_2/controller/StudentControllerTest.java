@@ -24,6 +24,8 @@ import static hogwarts.school_2.controller.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+
+// для создания тестов создана база данных (файл - application.properties)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StudentControllerTest {
 
@@ -37,19 +39,7 @@ class StudentControllerTest {
     private FacultyService facultyService;
 
     @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
-    private AllStudentsRepository allStudentsRepository;
-
-    @Autowired
     private TestRestTemplate restTemplate;
-
-
-    @BeforeEach
-    public void setUp() {
-        studentService = new StudentServiceImpl(studentRepository, allStudentsRepository);
-    }
 
 
     @Test

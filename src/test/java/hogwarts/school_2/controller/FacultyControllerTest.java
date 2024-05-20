@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+// для создания тестов создана база данных (файл - application.properties)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FacultyControllerTest {
 
@@ -36,16 +37,7 @@ class FacultyControllerTest {
     private StudentService studentService;
 
     @Autowired
-    private FacultyRepository facultyRepository;
-
-    @Autowired
     private TestRestTemplate restTemplate;
-
-
-    @BeforeEach
-    public void setUp() {
-        facultyService = new FacultyServiceImpl(facultyRepository);
-    }
 
 
     @Test

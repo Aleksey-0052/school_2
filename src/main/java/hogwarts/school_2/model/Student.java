@@ -9,11 +9,11 @@ import jakarta.persistence.*;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    private String name;
-    private Integer age;
+    @GeneratedValue(strategy = GenerationType.AUTO)      // для того, чтобы id генерировалось не случайным образом,
+    private Long id;                                     // а по порядку, необходимо указать аннотацию
+                                                         // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String name;                                 // Но это можно сделать только после удаления
+    private Integer age;                                 // прежней базы данных
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
