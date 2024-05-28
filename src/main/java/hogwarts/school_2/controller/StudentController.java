@@ -1,6 +1,7 @@
 package hogwarts.school_2.controller;
 
 
+import hogwarts.school_2.exception.EntityNotFoundException;
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.StudentService;
@@ -46,7 +47,13 @@ public class StudentController {
     @GetMapping("{id}")
     @Operation(summary = "Получение студента по id" )
     public Student get(@PathVariable ("id") Long id) {
-        return service.find(id);
+        Student student = null;
+        try {
+             student = service.find(id);
+        } catch (EntityNotFoundException e) {
+            System.out.println("Студент с таким id не найден " + e);
+        }
+        return student;
     }
 
     @GetMapping("all")
