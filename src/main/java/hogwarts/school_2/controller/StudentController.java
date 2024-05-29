@@ -1,6 +1,7 @@
 package hogwarts.school_2.controller;
 
 
+import hogwarts.school_2.exception.EntityNotFoundException;
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.StudentService;

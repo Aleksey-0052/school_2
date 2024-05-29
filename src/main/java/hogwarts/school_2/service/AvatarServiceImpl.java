@@ -4,6 +4,8 @@ import hogwarts.school_2.model.Avatar;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.repository.AvatarRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 public class AvatarServiceImpl implements AvatarService {
 
+    private final static Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+    // в параметры метода getLogger() передаем объект класса StudentServiceImpl
+
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
@@ -36,6 +41,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Avatar findAvatar(Long studentId) {
+        logger.debug("Was invoked method for find avatar or create avatar");
         return avatarRepository.findAvatarByStudentId(studentId).orElse(new Avatar());
     }
 
@@ -53,9 +59,11 @@ public class AvatarServiceImpl implements AvatarService {
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
                 BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
+            logger.info("Converting bytes ....");
             bis.transferTo(bos);
         }
 
+        logger.info("File has been uploaded!");
         Avatar avatar = findAvatar(studentId);
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
@@ -64,6 +72,7 @@ public class AvatarServiceImpl implements AvatarService {
         avatar.setData(GenerateImagePreview(filePath));
 
         avatarRepository.save(avatar);
+        logger.info("Avatar has been saved! id = {}, path = {}", avatar.getId(), filePath);
     }
 
     private byte[] GenerateImagePreview(Path filePath) throws IOException {
@@ -93,6 +102,7 @@ public class AvatarServiceImpl implements AvatarService {
     // добавляем пагинацию
     public List<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
+        logger.info("Was invoked method for get avatars by number of page and size of page");
         return avatarRepository.findAll(pageRequest).getContent();
         // можно вместо getContent() указать toList()
     }
