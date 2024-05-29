@@ -47,13 +47,7 @@ public class StudentController {
     @GetMapping("{id}")
     @Operation(summary = "Получение студента по id" )
     public Student get(@PathVariable ("id") Long id) {
-        Student student = null;
-        try {
-             student = service.find(id);
-        } catch (EntityNotFoundException e) {
-            System.out.println("Студент с таким id не найден " + e);
-        }
-        return student;
+        return service.find(id);
     }
 
     @GetMapping("all")
