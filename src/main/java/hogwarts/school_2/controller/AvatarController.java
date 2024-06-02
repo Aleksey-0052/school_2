@@ -70,6 +70,7 @@ public class AvatarController {
 
     // добавляем пагинацию
     @GetMapping("/page-size")
+    @Operation(summary = "Получение списка аватарок по номеру и размеру страницы")
     public ResponseEntity<List<Avatar>> getAllAvatars(
             @RequestParam("page") Integer pageNumber,
             @RequestParam("size") Integer pageSize

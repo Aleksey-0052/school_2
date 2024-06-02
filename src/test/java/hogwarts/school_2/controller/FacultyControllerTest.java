@@ -2,11 +2,8 @@ package hogwarts.school_2.controller;
 
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
-import hogwarts.school_2.repository.FacultyRepository;
 import hogwarts.school_2.service.FacultyService;
-import hogwarts.school_2.service.FacultyServiceImpl;
 import hogwarts.school_2.service.StudentService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -203,6 +200,27 @@ class FacultyControllerTest {
         assertNotNull(students);
         assertThat(students).isEqualTo(MOCK_STUDENTS);
     }
+
+    @Test
+    public void shouldReturnLongestFacultyName() throws Exception {
+
+        facultyService.create(MOCK_FACULTY_1);
+        facultyService.create(MOCK_FACULTY_2);
+        facultyService.create(MOCK_FACULTY_3);
+        facultyService.create(MOCK_FACULTY_4);
+
+        ResponseEntity<String> getLongestFacultyNameRs = restTemplate.getForEntity(
+                "http://localhost:" + port + "/faculty/longest-faculty-name",
+                String.class
+        );
+
+        assertThat(getLongestFacultyNameRs.getStatusCode()).isEqualTo(HttpStatus.OK);
+        String longestName = getLongestFacultyNameRs.getBody();
+        assertNotNull(longestName);
+        assertThat(longestName).isEqualTo(MOCK_FACULTY_NAME_3);
+
+    }
+
 
 
 

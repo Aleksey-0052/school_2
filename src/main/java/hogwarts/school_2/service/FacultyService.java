@@ -16,4 +16,9 @@ public interface FacultyService {
     Collection<Student> getStudents(Long facultyId);
 //    Collection<Faculty> getFacultiesByColor(String color);
 
+    // получение самого длинного имени факультета через stream
+    String getLongestFacultyName();
+
+    void calculate(int limit);
+
 }

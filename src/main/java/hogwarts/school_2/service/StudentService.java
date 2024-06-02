@@ -30,5 +30,12 @@ public interface StudentService {
     // получение количества всех студентов через создание interface projection
     Integer getAmountOfStudents();
 
+    // получение отсортированных в алфавитном порядке имен всех студентов в верхнем регистре, чье имя начинается на
+    // букву А, через использование stream
+    List<String> getStudentNamesStartingWithA();
+
+    // получение среднего возраста студентов через использование stream
+    Double getAverageAgeByStream();
+
 
 }
