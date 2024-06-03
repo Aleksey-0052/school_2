@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -102,6 +103,30 @@ public class StudentServiceImpl implements StudentService {
     public Integer getAmountOfStudents() {
         logger.info("Was invoked method for get amount of students");
         return allStudentsRepository.getAmountOfStudents();
+    }
+
+    @Override
+    public List<String> getStudentNamesStartingWithA() {
+        logger.info("Was invoked method for find names of students starting with A");
+        List<Student> students = studentRepository.findAll();
+        List<String> studentNames = students.stream()
+                .filter(student -> student.getName().toUpperCase().startsWith("А"))
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+        return studentNames;
+    }
+
+    @Override
+    public Double getAverageAgeByStream() {
+        logger.info("Was invoked method for get average age by stream");
+        List<Student> students = studentRepository.findAll();
+        double averageAge = students.stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0f);
+        return averageAge;
     }
 
 

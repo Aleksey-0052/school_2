@@ -180,5 +180,20 @@ public class FacultyControllerTestMock {
         // ObjectMapper метода writeValueAsString() и передачи в параметры метода установленного списка студентов
     }
 
+//    @Test
+//    public void  shouldReturnLongestFacultyName() throws Exception {
+//
+//        when(facultyRepository.findAll()).thenReturn(MOCK_FACULTIES);
+//
+//        when(facultyService.getLongestFacultyName()).thenReturn(MOCK_FACULTY_NAME_3);
+//
+//        mockmvc.perform(MockMvcRequestBuilders
+//                        .get("/faculty/longest-faculty-name")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTY_NAME_3)));
+//    }
+
 
 }

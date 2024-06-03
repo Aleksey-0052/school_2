@@ -19,6 +19,7 @@ public class FacultyController {
 
     private final FacultyService service;
 
+
     public FacultyController(FacultyService service) {
         this.service = service;
     }
@@ -73,6 +74,20 @@ public class FacultyController {
     public ResponseEntity<Collection<Student>> getStudents(@PathVariable("facultyId") Long facultyId) {
         Collection<Student> students = service.getStudents(facultyId);
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/longest-faculty-name")
+    @Operation(summary = "Получение самого длинного имени факультета" )
+    public ResponseEntity<String> getLongestFacultyName() {
+        String longestName = service.getLongestFacultyName();
+        return ResponseEntity.ok(longestName);
+    }
+
+    @GetMapping("/calculate-stream")
+    @Operation(summary = "Вычисление значения за меньшее количество времени")
+    public ResponseEntity<Void> calculate(@RequestParam Integer limit) {
+        service.calculate(limit);
+        return ResponseEntity.ok().build();
     }
 
 }

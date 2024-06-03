@@ -37,7 +37,7 @@ public class TestConstants {
 
     public static final Long MOCK_FACULTY_ID_3 = 3L;
 
-    public static final String MOCK_FACULTY_NAME_3 = "Faculty 3";
+    public static final String MOCK_FACULTY_NAME_3 = "Faculty 3 Slizerin";
 
     public static final String MOCK_FACULTY_COLOR_3 = "Red";
 
@@ -76,7 +76,8 @@ public class TestConstants {
 
     public static final Long MOCK_STUDENT_ID_2 = 2L;
 
-    public static final String MOCK_STUDENT_NAME_2 = "Student name 2";
+    public static final String MOCK_STUDENT_NAME_2 = "АStudent name 2";
+    // в методе сервиса указана буква А русского алфавита // поэтому здесь также указана буква русского алфавита
 
     public static final Integer MOCK_STUDENT_AGE_2 = 21;
 
@@ -100,7 +101,8 @@ public class TestConstants {
 
     public static final Long MOCK_STUDENT_ID_4 = 4L;
 
-    public static final String MOCK_STUDENT_NAME_4 = "Student name 4";
+    public static final String MOCK_STUDENT_NAME_4 = "АStudent name 4";
+    // в методе сервиса указана буква А русского алфавита // поэтому здесь также указана буква русского алфавита
 
     public static final Integer MOCK_STUDENT_AGE_4 = 22;
 
@@ -124,7 +126,8 @@ public class TestConstants {
 
     public static final Long MOCK_STUDENT_ID_6 = 6L;
 
-    public static final String MOCK_STUDENT_NAME_6 = "Student name 6";
+    public static final String MOCK_STUDENT_NAME_6 = "АStudent name 6";
+    // в методе сервиса указана буква А русского алфавита // поэтому здесь также указана буква русского алфавита
 
     public static final Integer MOCK_STUDENT_AGE_6 = 20;
 
@@ -162,6 +165,12 @@ public class TestConstants {
             MOCK_STUDENT_4,
             MOCK_STUDENT_5,
             MOCK_STUDENT_6
+    ));
+
+    public static final List<String> MOCK_STUDENT_NAMES_WITH_STARTING_A = new ArrayList<>(Arrays.asList(
+            MOCK_STUDENT_NAME_2,
+            MOCK_STUDENT_NAME_4,
+            MOCK_STUDENT_NAME_6
     ));
 
 

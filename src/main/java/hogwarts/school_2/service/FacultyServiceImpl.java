@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 
 @Service
@@ -70,6 +73,63 @@ public class FacultyServiceImpl implements FacultyService {
         return find(facultyId).getStudents();
         // находим по идентификатору факультет и у объекта "faculty" вызываем геттер для получения поля - список студентов
     }
+
+    @Override
+    public String getLongestFacultyName() {
+        logger.info("Was invoked method for find faculty by longest name");
+        List<Faculty> faculties = facultyRepository.findAll();
+        String longestName = faculties.stream()
+                .map(Faculty::getName)
+                // .max((str1, str2) -> str1.length() - str2.length()).get();
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
+        return longestName;
+    }
+
+    @Override
+    public void calculate(int limit) {
+        calculate1(limit);
+        calculate2(limit);
+        calculate3(limit);
+    }
+
+    private void calculate1(int limit) {
+        long start = System.currentTimeMillis();
+
+        long sum = Stream.iterate(1, a -> a + 1)
+                .limit(limit)
+                .reduce(0, (a, b) -> a + b );
+
+        long end = System.currentTimeMillis();
+
+        logger.info("Time 1 : {}", end - start);
+    }
+
+    private void calculate2(int limit) {
+        long start = System.currentTimeMillis();
+
+        long sum = Stream.iterate(1, a -> a + 1)
+                .limit(limit)
+                .parallel()
+                .reduce(0, (a, b) -> a + b );
+
+        long end = System.currentTimeMillis();
+
+        logger.info("Time 2 : {}", end - start);
+    }
+
+    private void calculate3(int limit) {
+        long start = System.currentTimeMillis();
+
+        long sum = LongStream
+                .range(1, limit)
+                .sum();
+
+        long end = System.currentTimeMillis();
+
+        logger.info("Time 3 : {}", end - start);
+    }
+
 
 //    @Override
 //    public Collection<Faculty> getFacultiesByColor(String color) {

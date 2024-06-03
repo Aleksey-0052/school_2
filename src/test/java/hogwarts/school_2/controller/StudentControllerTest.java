@@ -2,12 +2,8 @@ package hogwarts.school_2.controller;
 
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
-import hogwarts.school_2.repository.AllStudentsRepository;
-import hogwarts.school_2.repository.StudentRepository;
 import hogwarts.school_2.service.FacultyService;
 import hogwarts.school_2.service.StudentService;
-import hogwarts.school_2.service.StudentServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -167,8 +163,7 @@ class StudentControllerTest {
                 HttpMethod.GET,
                 null,
                 // заголовки
-                new ParameterizedTypeReference<List<Student>>() {
-                }
+                new ParameterizedTypeReference<List<Student>>() {}
                 // данный объект используется для того, чтобы в ответе пришел список студентов
         ).getBody();
 
@@ -218,7 +213,7 @@ class StudentControllerTest {
 
     // получение среднего возраста студентов
     @Test
-    public void shouldReturnAverageAgeOfStudents() {
+    public void shouldReturnAverageAgeOfStudents() throws Exception {
 
         createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
         createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
@@ -241,7 +236,7 @@ class StudentControllerTest {
 
     // получение количества всех студентов через создание interface projection
     @Test
-    public void shouldReturnAmountOfStudents() {
+    public void shouldReturnAmountOfStudents() throws Exception {
         createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
         createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
         createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
@@ -262,7 +257,7 @@ class StudentControllerTest {
 
     // получение части студентов
     @Test
-    public void shouldReturnLimitOfStudents() {
+    public void shouldReturnLimitOfStudents() throws Exception {
 
         createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
         createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
@@ -271,8 +266,8 @@ class StudentControllerTest {
         createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
         createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
 
-        List<Student> students = restTemplate.exchange(
-                "http://localhost:" + port + "/student/limit",
+        List <Student> students = restTemplate.exchange(
+                "http://localhost:" + port + "/student/last-five",
                 HttpMethod.GET,
                 null,
                 // заголовки
@@ -290,6 +285,55 @@ class StudentControllerTest {
         assertThat(students.get(3)).isEqualTo(MOCK_STUDENT_5);
         assertThat(students.get(4)).isEqualTo(MOCK_STUDENT_6);
 
+    }
+
+    @Test
+    public void shouldReturnStudentNamesStartingWithA() throws Exception {
+
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+
+        List<String> studentNames = restTemplate.exchange(
+                "http://localhost:" + port + "/student/names-by-a",
+                HttpMethod.GET,
+                null,
+                // заголовки
+                new ParameterizedTypeReference<List<String>>() {}
+                // данный объект используется для того, чтобы в ответе пришел список имен студентов
+        ).getBody();
+
+        assertFalse(studentNames.isEmpty());
+        assertTrue(studentNames.size() == 3);
+        assertThat(studentNames.get(0)).isEqualTo(MOCK_STUDENT_NAME_2.toUpperCase());
+        assertThat(studentNames.get(1)).isEqualTo(MOCK_STUDENT_NAME_4.toUpperCase());
+        assertThat(studentNames.get(2)).isEqualTo(MOCK_STUDENT_NAME_6.toUpperCase());
+    }
+
+    // получение среднего возраста студентов
+    @Test
+    public void shouldReturnAverageAgeOfStudentsByStream() throws Exception {
+
+        createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
+        createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
+        createMockStudent(3L, MOCK_STUDENT_NAME_3, MOCK_STUDENT_AGE_3);
+        createMockStudent(4L, MOCK_STUDENT_NAME_4, MOCK_STUDENT_AGE_4);
+        createMockStudent(5L, MOCK_STUDENT_NAME_5, MOCK_STUDENT_AGE_5);
+        createMockStudent(6L, MOCK_STUDENT_NAME_6, MOCK_STUDENT_AGE_6);
+
+        ResponseEntity<Double> getAverageAgeOfStudentRs = restTemplate.getForEntity(
+                "http://localhost:" + port + "/student/average-age-stream",
+                Double.class
+        );
+
+        assertThat(getAverageAgeOfStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);
+        double averageAge = getAverageAgeOfStudentRs.getBody();
+        // из объекта ResponseEntity получаем средний возраст
+        assertThat(averageAge).isEqualTo(((double) MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3 +
+                MOCK_STUDENT_AGE_4 + MOCK_STUDENT_AGE_5 + MOCK_STUDENT_AGE_6) / 6);
     }
 
 

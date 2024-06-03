@@ -71,34 +71,46 @@ public class StudentController {
         return service.getFaculty(studentId);
     }
 
-
-
-    // получение количества всех студентов
     @GetMapping("/count")
+    @Operation(summary = "Получение количества студентов")
     public ResponseEntity<Integer> getTotalCountOfStudents() {
         int count = service.getTotalCountOfStudents();
         return ResponseEntity.ok(count);
     }
 
-    // получение среднего возраста студентов
     @GetMapping("/average-age")
+    @Operation(summary = "Получение среднего возраста студентов" )
     public Double getAverageAgeOfStudents() {
         return service.getAverageAgeOfStudents();
     }
 
-    // получение части студентов
-    @GetMapping("/limit")
+    @GetMapping("/last-five")
+    @Operation(summary = "Получение пяти последних студентов" )
     public ResponseEntity<List<Student>> getLimitOfStudents() {
         List<Student> students = service.getLimitOfStudents();
         return ResponseEntity.ok(students);
     }
 
-
-    // получение количества всех студентов через создание interface projection
     @GetMapping("/amount")
+    @Operation(summary = "Получение количества студентов через создание интерфейса projection - AllStudentsRepository")
     public Integer getAmountOfStudents() {
         return service.getAmountOfStudents();
     }
+
+    @GetMapping("/names-by-a")
+    @Operation(summary = "Получение имен студентов на букву А")
+    public ResponseEntity<List<String>> getStudentNamesStartingWithA() {
+        List<String> studentNames = service.getStudentNamesStartingWithA();
+        return ResponseEntity.ok(studentNames);
+    }
+
+    @GetMapping("/average-age-stream")
+    @Operation(summary = "Получение среднего возраста студентов")
+    public ResponseEntity<Double> getAverageAgeByStream() {
+        double averageAge = service.getAverageAgeByStream();
+        return ResponseEntity.ok(averageAge);
+    }
+
 
 
 

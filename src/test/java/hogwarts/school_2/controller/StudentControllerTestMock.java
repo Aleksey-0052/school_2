@@ -195,18 +195,19 @@ public class StudentControllerTestMock {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString((double) ((MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3) / 3))));
+                .andExpect(content().json(mapper.writeValueAsString((double) ((MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 +
+                        MOCK_STUDENT_AGE_3) / 3))));
     }
 
 
-    // получение части студентов
+    // получение пяти последних студентов
     @Test
     public void shouldReturnLimitOfStudents() throws Exception {
 
         when(studentRepository.getLimitOfStudents()).thenReturn(MOCK_STUDENTS_LIMIT);
 
         mockmvc.perform(MockMvcRequestBuilders
-                        .get("/student/limit")
+                        .get("/student/last-five")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -226,6 +227,41 @@ public class StudentControllerTestMock {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS.size())));
+    }
+
+
+    @Test
+    public void shouldReturnStudentNamesStartingWithA() throws Exception {
+
+        when(studentRepository.findAll()).thenReturn(MOCK_STUDENTS);
+
+        when(studentService.getStudentNamesStartingWithA())
+                .thenReturn(MOCK_STUDENT_NAMES_WITH_STARTING_A);
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        .get("/student/names-by-a")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENT_NAMES_WITH_STARTING_A)));
+    }
+
+    // получение среднего возраста студентов через stream
+    @Test
+    public void shouldReturnAverageAgeOfStudentsByStream() throws Exception {
+
+        when(studentRepository.findAll()).thenReturn(MOCK_STUDENTS);
+
+        when(studentService.getAverageAgeByStream())
+                .thenReturn((double) ((MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3) / 3));
+
+        mockmvc.perform(MockMvcRequestBuilders
+                        .get("/student/average-age-stream")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString((double) ((MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 +
+                        MOCK_STUDENT_AGE_3) / 3))));
     }
 
 }
