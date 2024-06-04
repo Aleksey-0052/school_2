@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+
 
 
 @Service
@@ -84,50 +83,6 @@ public class FacultyServiceImpl implements FacultyService {
                 .max(Comparator.comparingInt(String::length))
                 .orElse("");
         return longestName;
-    }
-
-    @Override
-    public void calculate(int limit) {
-        calculate1(limit);
-        calculate2(limit);
-        calculate3(limit);
-    }
-
-    private void calculate1(int limit) {
-        long start = System.currentTimeMillis();
-
-        long sum = Stream.iterate(1, a -> a + 1)
-                .limit(limit)
-                .reduce(0, (a, b) -> a + b );
-
-        long end = System.currentTimeMillis();
-
-        logger.info("Time 1 : {}", end - start);
-    }
-
-    private void calculate2(int limit) {
-        long start = System.currentTimeMillis();
-
-        long sum = Stream.iterate(1, a -> a + 1)
-                .limit(limit)
-                .parallel()
-                .reduce(0, (a, b) -> a + b );
-
-        long end = System.currentTimeMillis();
-
-        logger.info("Time 2 : {}", end - start);
-    }
-
-    private void calculate3(int limit) {
-        long start = System.currentTimeMillis();
-
-        long sum = LongStream
-                .range(1, limit)
-                .sum();
-
-        long end = System.currentTimeMillis();
-
-        logger.info("Time 3 : {}", end - start);
     }
 
 

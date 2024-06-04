@@ -4,7 +4,6 @@ package hogwarts.school_2.controller;
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.FacultyService;
-import hogwarts.school_2.service.FacultyServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -81,13 +80,6 @@ public class FacultyController {
     public ResponseEntity<String> getLongestFacultyName() {
         String longestName = service.getLongestFacultyName();
         return ResponseEntity.ok(longestName);
-    }
-
-    @GetMapping("/calculate-stream")
-    @Operation(summary = "Вычисление значения за меньшее количество времени")
-    public ResponseEntity<Void> calculate(@RequestParam Integer limit) {
-        service.calculate(limit);
-        return ResponseEntity.ok().build();
     }
 
 }

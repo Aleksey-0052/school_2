@@ -13,14 +13,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 
 import static hogwarts.school_2.controller.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = FacultyController.class)
 public class FacultyControllerTestMock {
@@ -60,11 +61,11 @@ public class FacultyControllerTestMock {
                         .content(facultyObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 // проверяем, что статус ответа 200
-                .andExpect(jsonPath("$.name").value(MOCK_FACULTY_NAME_1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(MOCK_FACULTY_NAME_1))
                 // проверяем, что имя в json соответствует имени MOCK_FACULTY_NAME, то есть тому, которое передали
-                .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR_1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(MOCK_FACULTY_COLOR_1));
                 // проверяем, что цвет в json соответствует цвету MOCK_FACULTY_COLOR, то есть тому, который передали
                 // при помощи $ извлекаем из json значение соответствующего поля и сравниваем с входящими данными
     }
@@ -78,9 +79,9 @@ public class FacultyControllerTestMock {
                         .get("/faculty/" + MOCK_FACULTY_ID_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(MOCK_FACULTY_NAME_1))
-                .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR_1));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(MOCK_FACULTY_NAME_1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(MOCK_FACULTY_COLOR_1));
     }
 
     @Test
@@ -92,7 +93,7 @@ public class FacultyControllerTestMock {
                         .delete("/faculty/" + MOCK_FACULTY_ID_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -110,9 +111,9 @@ public class FacultyControllerTestMock {
                         .content(facultyObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(MOCK_FACULTY_NAME_1))
-                .andExpect(jsonPath("$.color").value(MOCK_FACULTY_COLOR_1));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(MOCK_FACULTY_NAME_1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(MOCK_FACULTY_COLOR_1));
     }
 
     @Test
@@ -123,8 +124,8 @@ public class FacultyControllerTestMock {
                         .get("/faculty/all")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(mapper.writeValueAsString(MOCK_FACULTIES)));
         // проверяем, что содержимое нашего ответа соответствует json, полученному в результате вызова у объекта типа
         // ObjectMapper метода writeValueAsString() и передачи в параметры метода списка факультетов
         // в результате вызова эндпоинта "/faculty/all" должен вернуться список факультетов - MOCK_FACULTIES
@@ -145,8 +146,8 @@ public class FacultyControllerTestMock {
                         .get("/faculty/get-by-name-or-color?name=" + MOCK_FACULTY_NAME_2)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_NAME)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_NAME)));
 
 
         when(facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(any(), any()))
@@ -157,8 +158,8 @@ public class FacultyControllerTestMock {
                         .get("/faculty/get-by-name-or-color?color=green")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_COLOR)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(mapper.writeValueAsString(MOCK_FACULTIES_BY_COLOR)));
     }
 
     @Test
@@ -174,26 +175,27 @@ public class FacultyControllerTestMock {
                         .get("/faculty/students/" + MOCK_FACULTY_ID_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(mapper.writeValueAsString(MOCK_STUDENTS)));
         // проверяем, что содержимое нашего ответа соответствует json, полученному в результате вызова у объекта типа
         // ObjectMapper метода writeValueAsString() и передачи в параметры метода установленного списка студентов
     }
 
-//    @Test
-//    public void  shouldReturnLongestFacultyName() throws Exception {
-//
-//        when(facultyRepository.findAll()).thenReturn(MOCK_FACULTIES);
-//
-//        when(facultyService.getLongestFacultyName()).thenReturn(MOCK_FACULTY_NAME_3);
-//
-//        mockmvc.perform(MockMvcRequestBuilders
-//                        .get("/faculty/longest-faculty-name")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTY_NAME_3)));
-//    }
+    @Test
+    public void  shouldReturnLongestFacultyName() throws Exception {
+
+        when(facultyRepository.findAll()).thenReturn(MOCK_FACULTIES);
+
+        when(facultyService.getLongestFacultyName()).thenReturn(MOCK_FACULTY_NAME_3);
+
+        ResultActions resultActions = mockmvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/longest-faculty-name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(MOCK_FACULTY_NAME_3));
+        // в данном случае результат возвращается без кавычек; поэтому его сравниваем не с json, а со String
+    }
 
 
 }

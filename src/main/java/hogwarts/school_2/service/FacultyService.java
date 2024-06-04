@@ -19,6 +19,4 @@ public interface FacultyService {
     // получение самого длинного имени факультета через stream
     String getLongestFacultyName();
 
-    void calculate(int limit);
-
 }

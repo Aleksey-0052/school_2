@@ -4,7 +4,6 @@ package hogwarts.school_2.controller;
 import hogwarts.school_2.service.InfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +14,6 @@ public class InfoController {
 
     private final InfoService service;
 
-//    @Value("${server.port}")
-//    private int port;
 
     public InfoController(InfoService service) {
         this.service = service;
