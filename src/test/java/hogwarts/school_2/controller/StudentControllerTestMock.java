@@ -204,7 +204,7 @@ public class StudentControllerTestMock {
     @Test
     public void shouldReturnLimitOfStudents() throws Exception {
 
-        when(studentRepository.getLimitOfStudents()).thenReturn(MOCK_STUDENTS_LIMIT);
+        when(studentRepository.getLastFive()).thenReturn(MOCK_STUDENTS_LIMIT);
 
         mockmvc.perform(MockMvcRequestBuilders
                         .get("/student/last-five")

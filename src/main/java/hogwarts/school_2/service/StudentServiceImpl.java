@@ -44,8 +44,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student delete(Long id) {
-        Student student = find(id);
         logger.info("Was invoked method for delete student");
+        Student student = find(id);
         studentRepository.deleteById(id);
         return student;
     }
@@ -94,9 +94,9 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.getAverageAgeOfStudents();
     }
 
-    public List<Student> getLimitOfStudents() {
+    public List<Student> getLastFive() {
         logger.info("Was invoked method for get last five of students");
-        return studentRepository.getLimitOfStudents();
+        return studentRepository.getLastFive();
     }
 
     // получение количества всех студентов через создание interface projection
@@ -128,6 +128,58 @@ public class StudentServiceImpl implements StudentService {
                 .orElse(0.0f);
         return averageAge;
     }
+
+    @Override
+    public void printStudents() {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.size() >= 6) {
+
+            students.subList(0, 2).forEach(this::printStudentName);
+            printStudents(students.subList(2, 4));
+            printStudents(students.subList(4, 6));
+        }
+    }
+
+    @Override
+    public void printStudentsSync() {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.size() >= 6) {
+
+            students.subList(0, 2).forEach(this::printStudentNameSync);
+            printStudentsSync(students.subList(2, 4));
+            printStudentsSync(students.subList(4, 6));
+        }
+    }
+
+    private void printStudentName(Student student) {
+        logger.info("Student, id: {}, name: {}", student.getId(), student.getName());
+    }
+
+    private void printStudents(List<Student> list) {
+
+        new Thread(() -> {
+            list.forEach(this::printStudentName);
+        }).start();
+
+    }
+
+    private synchronized void printStudentNameSync(Student student) {
+        logger.info("Sync Student, id: {}, name: {}", student.getId(), student.getName());
+    }
+
+    private void printStudentsSync(List<Student> list) {
+
+        new Thread(() -> {
+            list.forEach(this::printStudentNameSync);
+        }).start();
+
+    }
+
+
+
+
 
 
 }

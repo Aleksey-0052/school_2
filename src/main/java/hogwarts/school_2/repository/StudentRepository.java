@@ -26,7 +26,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     // получение последних пяти студентов в порядке возрастания id
     @Query(value = "SELECT * FROM students ORDER BY id OFFSET (SELECT COUNT(*) FROM students) - 5", nativeQuery = true)
-    List<Student> getLimitOfStudents();
+    List<Student> getLastFive();
 
     // Второй вариант:
     // SELECT * FROM students ORDER BY id DESC - отсортировать в порядке убывания id
