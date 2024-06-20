@@ -100,6 +100,7 @@ public class AvatarServiceImpl implements AvatarService {
 
 
     // добавляем пагинацию
+    @Override
     public List<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         logger.info("Was invoked method for get avatars by number of page and size of page");

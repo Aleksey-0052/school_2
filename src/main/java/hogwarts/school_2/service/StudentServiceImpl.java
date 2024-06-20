@@ -1,6 +1,7 @@
 package hogwarts.school_2.service;
 
 import hogwarts.school_2.exception.EntityNotFoundException;
+import hogwarts.school_2.exception.IncorrectArgumentException;
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.repository.AllStudentsRepository;
@@ -67,7 +68,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Collection<Student> getStudentsByAgeBetween(Integer minAge, Integer maxAge) {
         logger.info("Was invoked method for find students by age between");
+        checkAge(minAge);
+        checkAge(maxAge);
         return studentRepository.findByAgeBetween(minAge, maxAge);
+    }
+
+    private void checkAge(Integer age) {
+        if (age == null || age <= 10 || age >= 50) {
+            logger.error("Incorrect student age: {}", age);
+            throw new IncorrectArgumentException("Требуется указать корректный возраст студента");
+        }
     }
 
     @Override
@@ -84,22 +94,26 @@ public class StudentServiceImpl implements StudentService {
 //    }
 
 
+    @Override
     public Integer getTotalCountOfStudents() {
         logger.info("Was invoked method for get count of students");
         return studentRepository.getTotalCountOfStudents();
     }
 
+    @Override
     public Double getAverageAgeOfStudents() {
         logger.info("Was invoked method for get average age of students");
         return studentRepository.getAverageAgeOfStudents();
     }
 
+    @Override
     public List<Student> getLastFive() {
         logger.info("Was invoked method for get last five of students");
         return studentRepository.getLastFive();
     }
 
     // получение количества всех студентов через создание interface projection
+    @Override
     public Integer getAmountOfStudents() {
         logger.info("Was invoked method for get amount of students");
         return allStudentsRepository.getAmountOfStudents();
@@ -134,10 +148,17 @@ public class StudentServiceImpl implements StudentService {
         List<Student> students = studentRepository.findAll();
 
         if (students.size() >= 6) {
-
             students.subList(0, 2).forEach(this::printStudentName);
+            // выводим коллекцию из первых двух студентов в консоль путем вызова для каждого объекта типа Student
+            // приватного метода printStudentName()
             printStudents(students.subList(2, 4));
+            // в первом параллельном потоке выводим в консоль третьего и четвертого студентов путем вызова приватного
+            // метода printStudents(), который создает и запускает параллельный поток, и в этом потоке для каждого
+            // объекта типа Student вызывает приватный метод printStudentName()
             printStudents(students.subList(4, 6));
+            // во втором параллельном потоке выводим в консоль пятого и шестого студентов путем вызова приватного
+            // метода printStudents(), который создает и запускает параллельный поток, и в этом потоке для каждого
+            // объекта типа Student вызывает приватный метод printStudentName()
         }
     }
 
@@ -146,40 +167,45 @@ public class StudentServiceImpl implements StudentService {
         List<Student> students = studentRepository.findAll();
 
         if (students.size() >= 6) {
-
             students.subList(0, 2).forEach(this::printStudentNameSync);
+            // выводим коллекцию из первых двух студентов в консоль путем вызова для каждого объекта типа Student
+            // приватного синхронизированного метода printStudentName()
             printStudentsSync(students.subList(2, 4));
+            // в первом параллельном потоке выводим в консоль третьего и четвертого студентов путем вызова приватного
+            // метода printStudentsSync(), который создает и запускает параллельный поток, и в этом потоке для каждого
+            // объекта типа Student вызывает приватный синхронизированный метод printStudentName()
             printStudentsSync(students.subList(4, 6));
+            // во втором параллельном потоке выводим в консоль пятого и шестого студентов путем вызова приватного
+            // метода printStudentsSync(), который создает и запускает параллельный поток, и в этом потоке для каждого
+            // объекта типа Student вызывает приватный синхронизированный метод printStudentName()
         }
     }
+
 
     private void printStudentName(Student student) {
         logger.info("Student, id: {}, name: {}", student.getId(), student.getName());
     }
 
+    // создаем и запускаем параллельные потоки, в которых будет вызываться несинхронизированный метод printStudentName()
     private void printStudents(List<Student> list) {
-
         new Thread(() -> {
             list.forEach(this::printStudentName);
         }).start();
 
     }
 
+
     private synchronized void printStudentNameSync(Student student) {
         logger.info("Sync Student, id: {}, name: {}", student.getId(), student.getName());
     }
 
-    private void printStudentsSync(List<Student> list) {
 
+    // создаем и запускаем параллельные потоки, в которых будет вызываться синхронизированный метод printStudentName()
+    private void printStudentsSync(List<Student> list) {
         new Thread(() -> {
             list.forEach(this::printStudentNameSync);
         }).start();
 
     }
-
-
-
-
-
 
 }

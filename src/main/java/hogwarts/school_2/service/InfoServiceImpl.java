@@ -35,7 +35,7 @@ public class InfoServiceImpl implements InfoService {
 
         int sum = Stream.iterate(1, a -> a + 1)
                 .limit(limit)
-                .reduce(0, (a, b) -> a + b );
+                .reduce(0, (a, b) -> a + b);
 
         long end = System.currentTimeMillis();
 
@@ -48,7 +48,7 @@ public class InfoServiceImpl implements InfoService {
         int sum = Stream.iterate(1, a -> a + 1)
                 .parallel()
                 .limit(limit)
-                .reduce(0, (a, b) -> a + b );
+                .reduce(0, (a, b) -> a + b);
 
         long end = System.currentTimeMillis();
 
