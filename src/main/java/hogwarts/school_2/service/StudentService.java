@@ -25,7 +25,7 @@ public interface StudentService {
     // получение среднего возраста студентов
     Double getAverageAgeOfStudents();
     // получение части студентов
-    List<Student> getLimitOfStudents();
+    List<Student> getLastFive();
 
     // получение количества всех студентов через создание interface projection
     Integer getAmountOfStudents();
@@ -36,6 +36,13 @@ public interface StudentService {
 
     // получение среднего возраста студентов через использование stream
     Double getAverageAgeByStream();
+
+    // выведение в консоль шести студентов (первых двух в главном потоке, третьего и четвертого во втором потоке и
+    // пятого и шестого в третьем потоке
+    void printStudents();
+
+    // выведение в консоль студентов в трех потоках в синхронизированном методе
+    void printStudentsSync();
 
 
 }

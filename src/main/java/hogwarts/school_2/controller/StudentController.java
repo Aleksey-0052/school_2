@@ -1,7 +1,6 @@
 package hogwarts.school_2.controller;
 
 
-import hogwarts.school_2.exception.EntityNotFoundException;
 import hogwarts.school_2.model.Faculty;
 import hogwarts.school_2.model.Student;
 import hogwarts.school_2.service.StudentService;
@@ -86,8 +85,8 @@ public class StudentController {
 
     @GetMapping("/last-five")
     @Operation(summary = "Получение пяти последних студентов" )
-    public ResponseEntity<List<Student>> getLimitOfStudents() {
-        List<Student> students = service.getLimitOfStudents();
+    public ResponseEntity<List<Student>> getLastFive() {
+        List<Student> students = service.getLastFive();
         return ResponseEntity.ok(students);
     }
 
@@ -111,8 +110,18 @@ public class StudentController {
         return ResponseEntity.ok(averageAge);
     }
 
+    @GetMapping("/print-student-names")
+    @Operation(summary = "Вывод информации о студентах в разных потоках")
+    public ResponseEntity<Void> printStudents() {
+         service.printStudents();
+        return ResponseEntity.ok().build();
+    }
 
-
-
+    @GetMapping("/print-student-names-sync")
+    @Operation(summary = "Вывод информации о студентах в разных потоках (syncronized)")
+    public ResponseEntity<Void> printStudentsSync() {
+        service.printStudentsSync();
+        return ResponseEntity.ok().build();
+    }
 
 }

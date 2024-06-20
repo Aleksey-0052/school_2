@@ -255,9 +255,9 @@ class StudentControllerTest {
         assertThat(count).isEqualTo(MOCK_STUDENTS.size());
     }
 
-    // получение части студентов
+    // получение пяти последних студентов
     @Test
-    public void shouldReturnLimitOfStudents() throws Exception {
+    public void shouldReturnLastFive() throws Exception {
 
         createMockStudent(1L, MOCK_STUDENT_NAME_1, MOCK_STUDENT_AGE_1);
         createMockStudent(2L, MOCK_STUDENT_NAME_2, MOCK_STUDENT_AGE_2);
@@ -307,7 +307,7 @@ class StudentControllerTest {
         ).getBody();
 
         assertFalse(studentNames.isEmpty());
-        assertTrue(studentNames.size() == 3);
+        assertTrue(studentNames.size() == MOCK_STUDENT_NAMES_WITH_STARTING_A.size());
         assertThat(studentNames.get(0)).isEqualTo(MOCK_STUDENT_NAME_2.toUpperCase());
         assertThat(studentNames.get(1)).isEqualTo(MOCK_STUDENT_NAME_4.toUpperCase());
         assertThat(studentNames.get(2)).isEqualTo(MOCK_STUDENT_NAME_6.toUpperCase());
@@ -335,6 +335,7 @@ class StudentControllerTest {
         assertThat(averageAge).isEqualTo(((double) MOCK_STUDENT_AGE_1 + MOCK_STUDENT_AGE_2 + MOCK_STUDENT_AGE_3 +
                 MOCK_STUDENT_AGE_4 + MOCK_STUDENT_AGE_5 + MOCK_STUDENT_AGE_6) / 6);
     }
+
 
 
 

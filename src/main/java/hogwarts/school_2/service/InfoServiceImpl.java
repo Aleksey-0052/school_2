@@ -3,10 +3,11 @@ package hogwarts.school_2.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.stereotype.Service;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+@Service
 public class InfoServiceImpl implements InfoService {
 
     private final Logger logger = LoggerFactory.getLogger(InfoServiceImpl.class);
@@ -34,7 +35,7 @@ public class InfoServiceImpl implements InfoService {
 
         int sum = Stream.iterate(1, a -> a + 1)
                 .limit(limit)
-                .reduce(0, (a, b) -> a + b );
+                .reduce(0, (a, b) -> a + b);
 
         long end = System.currentTimeMillis();
 
@@ -47,7 +48,7 @@ public class InfoServiceImpl implements InfoService {
         int sum = Stream.iterate(1, a -> a + 1)
                 .parallel()
                 .limit(limit)
-                .reduce(0, (a, b) -> a + b );
+                .reduce(0, (a, b) -> a + b);
 
         long end = System.currentTimeMillis();
 
